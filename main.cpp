@@ -36,7 +36,7 @@ int main() {
     }*/
     short *ptr = image.data();
     short RGB = 0;
-    for (short i=0; i < IMG_SIZX*3; i++) {
+    for (short i=0; i < IMG_SIZX; i++) {
         switch (RGB) {
             case 0: cout << "RED MATRIX\n"; break;
             case 10: cout << "GREEN MATRIX\n"; break;
@@ -54,10 +54,10 @@ int main() {
     array<short, IMG_SIZX*IMG_SIZY> blu;
     cout << "new red matrix:\n";
     convolution(ptr, kernel, red);
-    cout << "new green matrix:\n";
+    /*cout << "new green matrix:\n";
     convolution(ptr, kernel, gre);
     cout << "new blue matrix:\n";
-    convolution(ptr, kernel, blu);
+    convolution(ptr, kernel, blu);*/
     return 0;
 }
 
@@ -79,6 +79,7 @@ short kernel_calc(short *ptr, short x_offset, short y_offset, const array<short,
     for (short i=0; i < 3; i++) {
         row_sum = 0;
         for (short v=0; v < 3; v++) {
+            cout << "mul of " << kernel[v*3 + i] << " " << ptr[(i+x_offset)*10 + (v+y_offset)] << '\n';
             row_sum += kernel[v*3 + i] * ptr[(i*10+x_offset) + (v+y_offset)];//operacion es columna x fila
         }
         total_sum += row_sum;
