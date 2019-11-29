@@ -21,21 +21,16 @@ array<short, 9> kernel= {1, 2, 1,
                          2, 4, 2,
                          1, 2, 1 };
 
-void convolution(short*, const array<short, 9>&, array<short, (IMG_SIZX - KERNEL_X + 1)*(IMG_SIZY - KERNEL_Y + 1)>&);
-short kernel_calc(short *, short, short, const array<short, 9>&);
+template <size_t N>
+void convolution(short*, const array<short, KERNEL_X*KERNEL_Y>&, array<short, N>&);
+short kernel_calc(short*, short, short, const array<short, KERNEL_X*KERNEL_Y>&);
 
-void printMatrix(const array<short, (IMG_SIZX - KERNEL_X + 1)*(IMG_SIZY - KERNEL_Y + 1)>&, short, short);
+template <size_t N>
+void printMatrix(const array<short, N>&, short, short);
 
 int main() {
-    CImg<short> image("bw.jpg");
-    //image.blur(2.5);
-    //CImgDisplay main_disp(image,"Click a point");
-    /*while (!main_disp.is_closed()) {
-        main_disp.wait();
-        if (main_disp.button() && main_disp.mouse_y()>=0) {
-            const int y = main_disp.mouse_y();
-        }
-    }*/
+    CImg<short> image("square.jpg");
+
     short *ptr = image.data();
     short RGB = 0;
     for (short i=0; i < IMG_SIZX*3; i++) {
@@ -58,73 +53,70 @@ int main() {
     array<short, result_x_size*result_y_size> blu;
     cout << "new red matrix:\n";
     convolution(ptr, kernel, red);
-    printMatrix(red, 8, 8);
+    printMatrix(red, result_x_size, result_y_size);
+    ptr += 100;
     cout << "new green matrix:\n";
     convolution(ptr, kernel, gre);
-    printMatrix(red, 8, 8);
+    printMatrix(gre, result_x_size, result_y_size);
+    ptr += 100;
     cout << "new blue matrix:\n";
     convolution(ptr, kernel, blu);
-    printMatrix(red, 8, 8);
+    printMatrix(blu, result_x_size, result_y_size);
 
     CImg<short> new_image(8, 8, 1, 3);
     for (short i=0; i < 8; i++) {
         for (short v=0; v < 8; v++) {
             new_image[i*8 + v] = red[i*8 + v];
-            //new_image(i*8 + v) = 10;
         }
     }
     for (short i=8; i < 16; i++) {
         short inicio = i-8;
         for (short v=0; v < 8; v++) {
             new_image[i*8 + v] = gre[inicio*8 + v];
-            //new_image(i*8 + v) = 10;
         }
     }
     for (short i=16; i < 24; i++) {
         short inicio = i-16;
         for (short v=0; v < 8; v++) {
             new_image[i*8 + v] = blu[inicio*8 + v];
-            //new_image(i*8 + v) = 10;
         }
     }
-    //new_image.fill(red);
 
     image.display();
-    cout << "valor de pixel=" << new_image(0);
     new_image.display();
 
     return 0;
 }
 
-void convolution(short *ptr, const array<short, 9>& kernel, array<short, (IMG_SIZX - KERNEL_X + 1)*(IMG_SIZY - KERNEL_Y + 1)>& result) {
-    short x_moves = IMG_SIZX - KERNEL_X;
-    short y_moves = IMG_SIZY - KERNEL_Y;
-    //cout << "x_moves: " << x_moves << '\n';
-    for (short i=0; i <= x_moves; i++) {
-        for (short v=0; v <= y_moves; v++) {
-            result[i*8 + v] = kernel_calc(ptr, i, v, kernel);
-            //cout << kernel_calc(ptr, i, v, kernel) << ',';
+template <size_t N>
+void convolution(short *ptr, const array<short, KERNEL_X*KERNEL_Y>& kernel, array<short, N>& result) {
+    ushort x_moves = IMG_SIZX - KERNEL_X + 1;
+    ushort y_moves = IMG_SIZY - KERNEL_Y + 1;
+    for (ushort i=0; i < x_moves; i++) {
+        for (ushort v=0; v < y_moves; v++) {
+            result[i*x_moves + v] = kernel_calc(ptr, i, v, kernel);
         }
     }
 }
 
-short kernel_calc(short *ptr, short x_offset, short y_offset, const array<short, 9>& kernel) {
-    short total_sum = 0;
-    short row_sum;
-    for (short i=0; i < 3; i++) {
+short kernel_calc(short *ptr, short x_offset, short y_offset, const array<short, KERNEL_X*KERNEL_Y>& kernel) {
+    ushort total_sum = 0;
+    ushort row_sum;
+    for (ushort i=0; i < KERNEL_X; i++) {
         row_sum = 0;
-        for (short v=0; v < 3; v++) {
-            row_sum += kernel[v*3 + i] *  ptr[(i+x_offset)*10 + (v+y_offset)];//operacion es columna x fila
+        for (ushort v=0; v < KERNEL_Y; v++) {
+            row_sum += kernel[v*3 + i] *  ptr[(i+x_offset)*IMG_SIZX + (v+y_offset)];//operacion es columna x fila
         }
         total_sum += row_sum;
     }
     return total_sum / KERNEL_TOTAL;
 }
 
-void printMatrix(const array<short, (IMG_SIZX - KERNEL_X + 1)*(IMG_SIZY - KERNEL_Y + 1)>& result, short x_dimension, short y_dimension) {
-    for (short i=0; i < x_dimension; i++) {
-        for (short v=0; v < y_dimension; v++) {
-            cout << result[i*x_dimension + v] << ',';
+template <size_t N>
+void printMatrix(const array<short, N>& matrix, short x_dimension, short y_dimension) {
+    for (ushort i=0; i < x_dimension; i++) {
+        for (ushort v=0; v < y_dimension; v++) {
+            cout << matrix[i*x_dimension + v] << ',';
         }
         cout << '\n';
     }
