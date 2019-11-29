@@ -24,6 +24,8 @@ array<short, 9> kernel= {1, 2, 1,
 void convolution(short*, const array<short, 9>&, array<short, (IMG_SIZX - KERNEL_X + 1)*(IMG_SIZY - KERNEL_Y + 1)>&);
 short kernel_calc(short *, short, short, const array<short, 9>&);
 
+void printMatrix(const array<short, (IMG_SIZX - KERNEL_X + 1)*(IMG_SIZY - KERNEL_Y + 1)>&, short, short);
+
 int main() {
     CImg<short> image("bw.jpg");
     //image.blur(2.5);
@@ -60,6 +62,8 @@ int main() {
     convolution(ptr, kernel, gre);
     cout << "new blue matrix:\n";
     convolution(ptr, kernel, blu);
+    cout << "red with printMatrix() func\n";
+    printMatrix(red, 8, 8);
 
     /*CImg<short> new_image(8, 8, 1, 3);
     for (short i=0; i < 8; i++) {
@@ -97,8 +101,8 @@ void convolution(short *ptr, const array<short, 9>& kernel, array<short, (IMG_SI
     //cout << "x_moves: " << x_moves << '\n';
     for (short i=0; i <= x_moves; i++) {
         for (short v=0; v <= y_moves; v++) {
-            //result[i*8 + v] = kernel_calc(ptr, i, v, kernel) << ',';
-            cout << kernel_calc(ptr, i, v, kernel) << ',';
+            result[i*8 + v] = kernel_calc(ptr, i, v, kernel);
+            //cout << kernel_calc(ptr, i, v, kernel) << ',';
         }
         cout << '\n';
     }
@@ -117,10 +121,10 @@ short kernel_calc(short *ptr, short x_offset, short y_offset, const array<short,
     return total_sum / KERNEL_TOTAL;
 }
 
-void printMatrix(short* result, short x_dimension, short y_dimension) {
+void printMatrix(const array<short, (IMG_SIZX - KERNEL_X + 1)*(IMG_SIZY - KERNEL_Y + 1)>& result, short x_dimension, short y_dimension) {
     for (short i=0; i < x_dimension; i++) {
         for (short v=0; v < y_dimension; v++) {
-            ;
+            cout << result[i*x_dimension + v] << ',';
         }
         cout << '\n';
     }
