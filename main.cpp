@@ -11,9 +11,13 @@ using std::cout;
 using std::array;
 
 // to compile: ~$ g++ main.cpp -L/usr/X11R6/lib -lm -lpthread -lX11 -ljpeg
+// you can add '-Dcimg_use_png' flag to handle .png (RGBA) images
 
+// IMPORTANT TO CHANGE THESE 
 #define IMG_SIZY 10
 #define IMG_SIZX 10
+constexpr size_t IMAGE_CHANNEL_SIZE = IMG_SIZY * IMG_SIZX;
+
 #define KERNEL_X 3
 #define KERNEL_Y 3
 #define KERNEL_TOTAL 16
@@ -21,9 +25,17 @@ array<short, 9> kernel= {1, 2, 1,
                          2, 4, 2,
                          1, 2, 1 };
 
+constexpr size_t KERNEL_SIZE = KERNEL_X*KERNEL_Y;
+constexpr size_t result_x_size = (IMG_SIZX - KERNEL_X + 1);
+constexpr size_t result_y_size = (IMG_SIZY - KERNEL_Y + 1);
+constexpr size_t RESULT_SIZE = result_x_size * result_y_size;
+
 template <size_t N>
-void convolution(short*, const array<short, KERNEL_X*KERNEL_Y>&, array<short, N>&);
-short kernel_calc(short*, short, short, const array<short, KERNEL_X*KERNEL_Y>&);
+void convolution(short*, const array<short, KERNEL_SIZE>&, array<short, N>&);
+short kernel_calc(short*, short, short, const array<short, KERNEL_SIZE>&);
+
+template <size_t N>
+void applyFilter(short*, const array<short, KERNEL_SIZE>&, array<short, N>&, array<short, N>&, array<short, N>&);
 
 template <size_t N>
 void printMatrix(const array<short, N>&, short, short);
@@ -46,22 +58,10 @@ int main() {
         cout << '\n';
     }
 
-    const short result_x_size = (IMG_SIZX - KERNEL_X) + 1;
-    const short result_y_size = (IMG_SIZY - KERNEL_Y) + 1;
-    array<short, result_x_size*result_y_size> red;
-    array<short, result_x_size*result_y_size> gre;
-    array<short, result_x_size*result_y_size> blu;
-    cout << "new red matrix:\n";
-    convolution(ptr, kernel, red);
-    printMatrix(red, result_x_size, result_y_size);
-    ptr += 100;
-    cout << "new green matrix:\n";
-    convolution(ptr, kernel, gre);
-    printMatrix(gre, result_x_size, result_y_size);
-    ptr += 100;
-    cout << "new blue matrix:\n";
-    convolution(ptr, kernel, blu);
-    printMatrix(blu, result_x_size, result_y_size);
+    array<short, RESULT_SIZE> red;
+    array<short, RESULT_SIZE> gre;
+    array<short, RESULT_SIZE> blu;
+    applyFilter(ptr, kernel, red, gre, blu);
 
     CImg<short> new_image(8, 8, 1, 3);
     for (short i=0; i < 8; i++) {
@@ -84,12 +84,13 @@ int main() {
 
     image.display();
     new_image.display();
+    new_image.save("hola.jpg");
 
     return 0;
 }
 
 template <size_t N>
-void convolution(short *ptr, const array<short, KERNEL_X*KERNEL_Y>& kernel, array<short, N>& result) {
+void convolution(short *ptr, const array<short, KERNEL_SIZE>& kernel, array<short, N>& result) {
     ushort x_moves = IMG_SIZX - KERNEL_X + 1;
     ushort y_moves = IMG_SIZY - KERNEL_Y + 1;
     for (ushort i=0; i < x_moves; i++) {
@@ -99,7 +100,7 @@ void convolution(short *ptr, const array<short, KERNEL_X*KERNEL_Y>& kernel, arra
     }
 }
 
-short kernel_calc(short *ptr, short x_offset, short y_offset, const array<short, KERNEL_X*KERNEL_Y>& kernel) {
+short kernel_calc(short *ptr, short x_offset, short y_offset, const array<short, KERNEL_SIZE>& kernel) {
     ushort total_sum = 0;
     ushort row_sum;
     for (ushort i=0; i < KERNEL_X; i++) {
@@ -120,4 +121,19 @@ void printMatrix(const array<short, N>& matrix, short x_dimension, short y_dimen
         }
         cout << '\n';
     }
+}
+
+template <size_t N>
+void applyFilter(short* ptr, const array<short, KERNEL_SIZE>& kernel, array<short, N>& red, array<short, N>& green, array<short, N>& blue) {
+    cout << "new red matrix:\n";
+    convolution(ptr, kernel, red);
+    printMatrix(red, result_x_size, result_y_size);
+    ptr += IMAGE_CHANNEL_SIZE;
+    cout << "new green matrix:\n";
+    convolution(ptr, kernel, green);
+    printMatrix(green, result_x_size, result_y_size);
+    ptr += IMAGE_CHANNEL_SIZE;
+    cout << "new blue matrix:\n";
+    convolution(ptr, kernel, blue);
+    printMatrix(blue, result_x_size, result_y_size);
 }
