@@ -21,11 +21,11 @@ array<short, 9> kernel= {1, 2, 1,
                          2, 4, 2,
                          1, 2, 1 };
 
-void convolution(short*, const array<short, 9>&, array<short, IMG_SIZX*IMG_SIZY>&);
+void convolution(short*, const array<short, 9>&, array<short, (IMG_SIZX - KERNEL_X + 1)*(IMG_SIZY - KERNEL_Y + 1)>&);
 short kernel_calc(short *, short, short, const array<short, 9>&);
 
 int main() {
-    CImg<short> image("square.jpg");
+    CImg<short> image("bw.jpg");
     //image.blur(2.5);
     //CImgDisplay main_disp(image,"Click a point");
     /*while (!main_disp.is_closed()) {
@@ -49,9 +49,11 @@ int main() {
         cout << '\n';
     }
 
-    array<short, IMG_SIZX*IMG_SIZY> red;
-    array<short, IMG_SIZX*IMG_SIZY> gre;
-    array<short, IMG_SIZX*IMG_SIZY> blu;
+    const short result_x_size = (IMG_SIZX - KERNEL_X) + 1;
+    const short result_y_size = (IMG_SIZY - KERNEL_Y) + 1;
+    array<short, result_x_size*result_y_size> red;
+    array<short, result_x_size*result_y_size> gre;
+    array<short, result_x_size*result_y_size> blu;
     cout << "new red matrix:\n";
     convolution(ptr, kernel, red);
     cout << "new green matrix:\n";
@@ -59,27 +61,43 @@ int main() {
     cout << "new blue matrix:\n";
     convolution(ptr, kernel, blu);
 
-    CImg<short> new_image(8, 8, 1, 3);
+    /*CImg<short> new_image(8, 8, 1, 3);
     for (short i=0; i < 8; i++) {
         for (short v=0; v < 8; v++) {
-            if (RGB < 8)
-                new_image[i*8 + v] = red[i*8 + v];
+            new_image[i*8 + v] = red[i*8 + v];
+            //new_image(i*8 + v) = 10;
         }
     }
-    //CImgDisplay main_disp2(new_image, "filter applied");
-    new_image.display();
-    bool wait;
-    std::cin >> wait;
+    for (short i=8; i < 16; i++) {
+        short inicio = i-8;
+        for (short v=0; v < 8; v++) {
+            new_image[i*8 + v] = gre[inicio*8 + v];
+            //new_image(i*8 + v) = 10;
+        }
+    }
+    for (short i=16; i < 24; i++) {
+        short inicio = i-16;
+        for (short v=0; v < 8; v++) {
+            new_image[i*8 + v] = blu[inicio*8 + v];
+            //new_image(i*8 + v) = 10;
+        }
+    }
+    //new_image.fill(red);
+
+    image.display();
+    cout << "valor de pixel=" << new_image(0);
+    new_image.display();*/
 
     return 0;
 }
 
-void convolution(short *ptr, const array<short, 9>& kernel, array<short, IMG_SIZX*IMG_SIZY>& result) {
+void convolution(short *ptr, const array<short, 9>& kernel, array<short, (IMG_SIZX - KERNEL_X + 1)*(IMG_SIZY - KERNEL_Y + 1)>& result) {
     short x_moves = IMG_SIZX - KERNEL_X;
     short y_moves = IMG_SIZY - KERNEL_Y;
-    cout << "x_moves: " << x_moves << '\n';
+    //cout << "x_moves: " << x_moves << '\n';
     for (short i=0; i <= x_moves; i++) {
         for (short v=0; v <= y_moves; v++) {
+            //result[i*8 + v] = kernel_calc(ptr, i, v, kernel) << ',';
             cout << kernel_calc(ptr, i, v, kernel) << ',';
         }
         cout << '\n';
@@ -97,4 +115,13 @@ short kernel_calc(short *ptr, short x_offset, short y_offset, const array<short,
         total_sum += row_sum;
     }
     return total_sum / KERNEL_TOTAL;
+}
+
+void printMatrix(short* result, short x_dimension, short y_dimension) {
+    for (short i=0; i < x_dimension; i++) {
+        for (short v=0; v < y_dimension; v++) {
+            ;
+        }
+        cout << '\n';
+    }
 }
