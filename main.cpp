@@ -58,14 +58,15 @@ int main() {
     array<short, result_x_size*result_y_size> blu;
     cout << "new red matrix:\n";
     convolution(ptr, kernel, red);
+    printMatrix(red, 8, 8);
     cout << "new green matrix:\n";
     convolution(ptr, kernel, gre);
+    printMatrix(red, 8, 8);
     cout << "new blue matrix:\n";
     convolution(ptr, kernel, blu);
-    cout << "red with printMatrix() func\n";
     printMatrix(red, 8, 8);
 
-    /*CImg<short> new_image(8, 8, 1, 3);
+    CImg<short> new_image(8, 8, 1, 3);
     for (short i=0; i < 8; i++) {
         for (short v=0; v < 8; v++) {
             new_image[i*8 + v] = red[i*8 + v];
@@ -90,7 +91,7 @@ int main() {
 
     image.display();
     cout << "valor de pixel=" << new_image(0);
-    new_image.display();*/
+    new_image.display();
 
     return 0;
 }
@@ -104,7 +105,6 @@ void convolution(short *ptr, const array<short, 9>& kernel, array<short, (IMG_SI
             result[i*8 + v] = kernel_calc(ptr, i, v, kernel);
             //cout << kernel_calc(ptr, i, v, kernel) << ',';
         }
-        cout << '\n';
     }
 }
 
