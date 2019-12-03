@@ -2,3 +2,6 @@
 CImg-2.7.5/*
 .vscode/*
 a.out
+
+#images
+*.jpg

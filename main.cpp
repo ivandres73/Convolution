@@ -14,8 +14,8 @@ using std::array;
 // you can add '-Dcimg_use_png' flag to handle .png (RGBA) images
 
 // IMPORTANT TO CHANGE THESE 
-#define IMG_SIZY 10
-#define IMG_SIZX 10
+#define IMG_SIZX 50
+#define IMG_SIZY 45
 constexpr size_t IMAGE_CHANNEL_SIZE = IMG_SIZY * IMG_SIZX;
 
 #define KERNEL_X 3
@@ -41,20 +41,23 @@ template <size_t N>
 void printMatrix(const array<short, N>&, short, short);
 
 int main() {
-    CImg<short> image("square.jpg");
+    CImg<short> image("heart.jpg");
 
     short *ptr = image.data();
-    short RGB = 0;
-    for (short i=0; i < IMG_SIZX*3; i++) {
-        switch (RGB) {
+    for (short i=0; i < IMG_SIZY*3; i++) {
+        switch (i) {
             case 0: cout << "RED MATRIX\n"; break;
-            case 10: cout << "GREEN MATRIX\n"; break;
-            case 20: cout << "BLUE MATRIX\n"; break;
+            case IMG_SIZY: cout << "GREEN MATRIX\n"; break;
+            case IMG_SIZY*2: cout << "BLUE MATRIX\n"; break;
         }
-        for (short v=0; v < IMG_SIZY; v++) {
-            cout << ptr[i*IMG_SIZX + v] << " ";
+        for (short v=0; v < IMG_SIZX; v++) {
+            if (ptr[i*IMG_SIZX + v] <10)
+                cout << "  " << ptr[i*IMG_SIZX + v] << ' ';
+            else if (ptr[i*IMG_SIZX + v] <100)
+                cout << " " << ptr[i*IMG_SIZX + v] << ' ';
+            else
+                cout << ptr[i*IMG_SIZX + v] << ' ';
         }
-        RGB++;
         cout << '\n';
     }
 
@@ -63,22 +66,22 @@ int main() {
     array<short, RESULT_SIZE> blu;
     applyFilter(ptr, kernel, red, gre, blu);
 
-    CImg<short> new_image(8, 8, 1, 3);
-    for (short i=0; i < 8; i++) {
-        for (short v=0; v < 8; v++) {
-            new_image[i*8 + v] = red[i*8 + v];
+    CImg<short> new_image(result_x_size, result_y_size, 1, 3);
+    for (short i=0; i < result_y_size; i++) {
+        for (short v=0; v < result_x_size; v++) {
+            new_image[i*result_x_size + v] = red[i*result_x_size + v];
         }
     }
-    for (short i=8; i < 16; i++) {
-        short inicio = i-8;
-        for (short v=0; v < 8; v++) {
-            new_image[i*8 + v] = gre[inicio*8 + v];
+    for (short i=result_y_size; i < result_y_size*2; i++) {
+        short inicio = i-result_y_size;
+        for (short v=0; v < result_x_size; v++) {
+            new_image[i*result_x_size + v] = gre[inicio*result_x_size + v];
         }
     }
-    for (short i=16; i < 24; i++) {
-        short inicio = i-16;
-        for (short v=0; v < 8; v++) {
-            new_image[i*8 + v] = blu[inicio*8 + v];
+    for (short i=result_y_size*2; i < result_y_size*3; i++) {
+        short inicio = i-result_y_size*2;
+        for (short v=0; v < result_x_size; v++) {
+            new_image[i*result_x_size + v] = blu[inicio*result_x_size + v];
         }
     }
 
@@ -93,8 +96,8 @@ template <size_t N>
 void convolution(short *ptr, const array<short, KERNEL_SIZE>& kernel, array<short, N>& result) {
     ushort x_moves = IMG_SIZX - KERNEL_X + 1;
     ushort y_moves = IMG_SIZY - KERNEL_Y + 1;
-    for (ushort i=0; i < x_moves; i++) {
-        for (ushort v=0; v < y_moves; v++) {
+    for (ushort i=0; i < y_moves; i++) {
+        for (ushort v=0; v < x_moves; v++) {
             result[i*x_moves + v] = kernel_calc(ptr, i, v, kernel);
         }
     }
@@ -115,9 +118,14 @@ short kernel_calc(short *ptr, short x_offset, short y_offset, const array<short,
 
 template <size_t N>
 void printMatrix(const array<short, N>& matrix, short x_dimension, short y_dimension) {
-    for (ushort i=0; i < x_dimension; i++) {
-        for (ushort v=0; v < y_dimension; v++) {
-            cout << matrix[i*x_dimension + v] << ',';
+    for (ushort i=0; i < y_dimension; i++) {
+        for (ushort v=0; v < x_dimension; v++) {
+            if (matrix[i*x_dimension + v] <10)
+                cout << "  " << matrix[i*x_dimension + v] << ',';
+            else if (matrix[i*x_dimension + v] <100)
+                cout << " " << matrix[i*x_dimension + v] << ',';
+            else
+                cout << matrix[i*x_dimension + v] << ',';
         }
         cout << '\n';
     }
