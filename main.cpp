@@ -36,6 +36,8 @@ short kernel_calc(short*, short, short, const array<short, KERNEL_SIZE>&);
 
 template <size_t N>
 void applyFilter(short*, const array<short, KERNEL_SIZE>&, array<short, N>&, array<short, N>&, array<short, N>&);
+template <size_t N>
+void writeRGBtoImg(CImg<short>&, array<short, N>&, array<short, N>&, array<short, N>&);
 
 template <size_t N>
 void printMatrix(const array<short, N>&, short, short);
@@ -46,9 +48,9 @@ int main() {
     short *ptr = image.data();
     for (short i=0; i < IMG_SIZY*3; i++) {
         switch (i) {
-            case 0: cout << "RED MATRIX\n"; break;
-            case IMG_SIZY: cout << "GREEN MATRIX\n"; break;
-            case IMG_SIZY*2: cout << "BLUE MATRIX\n"; break;
+            case 0: cout << "\t\033[1;31mRED MATRIX\033[0m\n"; break;
+            case IMG_SIZY: cout << "\t\033[1;32mGREEN MATRIX\033[0m\n"; break;
+            case IMG_SIZY*2: cout << "\t\033[1;34mBLUE MATRIX\033[0m\n"; break;
         }
         for (short v=0; v < IMG_SIZX; v++) {
             if (ptr[i*IMG_SIZX + v] <10)
@@ -67,23 +69,8 @@ int main() {
     applyFilter(ptr, kernel, red, gre, blu);
 
     CImg<short> new_image(result_x_size, result_y_size, 1, 3);
-    for (short i=0; i < result_y_size; i++) {
-        for (short v=0; v < result_x_size; v++) {
-            new_image[i*result_x_size + v] = red[i*result_x_size + v];
-        }
-    }
-    for (short i=result_y_size; i < result_y_size*2; i++) {
-        short inicio = i-result_y_size;
-        for (short v=0; v < result_x_size; v++) {
-            new_image[i*result_x_size + v] = gre[inicio*result_x_size + v];
-        }
-    }
-    for (short i=result_y_size*2; i < result_y_size*3; i++) {
-        short inicio = i-result_y_size*2;
-        for (short v=0; v < result_x_size; v++) {
-            new_image[i*result_x_size + v] = blu[inicio*result_x_size + v];
-        }
-    }
+    
+    writeRGBtoImg(new_image, red, gre, blu);
 
     image.display();
     new_image.display();
@@ -133,15 +120,37 @@ void printMatrix(const array<short, N>& matrix, short x_dimension, short y_dimen
 
 template <size_t N>
 void applyFilter(short* ptr, const array<short, KERNEL_SIZE>& kernel, array<short, N>& red, array<short, N>& green, array<short, N>& blue) {
-    cout << "new red matrix:\n";
+    cout << "\tnew red matrix:\n";
     convolution(ptr, kernel, red);
     printMatrix(red, result_x_size, result_y_size);
     ptr += IMAGE_CHANNEL_SIZE;
-    cout << "new green matrix:\n";
+    cout << "\tnew green matrix:\n";
     convolution(ptr, kernel, green);
     printMatrix(green, result_x_size, result_y_size);
     ptr += IMAGE_CHANNEL_SIZE;
-    cout << "new blue matrix:\n";
+    cout << "\tnew blue matrix:\n";
     convolution(ptr, kernel, blue);
     printMatrix(blue, result_x_size, result_y_size);
+}
+
+template <size_t N>
+void writeRGBtoImg(CImg<short>& new_image, array<short, N>& red, array<short, N>& gre, array<short, N>& blu) {
+    for (register short i=0; i < result_y_size; i++) {
+        short inicio = i * result_x_size;
+        for (register short v=0; v < result_x_size; v++) {
+            new_image[i*result_x_size + v] = red[inicio + v];
+        }
+    }
+    for (register short i=result_y_size; i < result_y_size*2; i++) {
+        short inicio = (i-result_y_size) * result_x_size;
+        for (register short v=0; v < result_x_size; v++) {
+            new_image[i*result_x_size + v] = gre[inicio + v];
+        }
+    }
+    for (register short i=result_y_size*2; i < result_y_size*3; i++) {
+        short inicio = (i-result_y_size*2) * result_x_size;
+        for (register short v=0; v < result_x_size; v++) {
+            new_image[i*result_x_size + v] = blu[inicio + v];
+        }
+    }
 }
