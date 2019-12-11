@@ -13,9 +13,9 @@ using std::array;
 // to compile: ~$ g++ main.cpp -L/usr/X11R6/lib -lm -lpthread -lX11 -ljpeg
 // you can add '-Dcimg_use_png' flag to handle .png (RGBA) images
 
-// IMPORTANT TO CHANGE THESE 
-#define IMG_SIZX 50
-#define IMG_SIZY 45
+// IMPORTANT TO CHANGE THESE
+#define IMG_SIZX 500
+#define IMG_SIZY 700
 constexpr size_t IMAGE_CHANNEL_SIZE = IMG_SIZY * IMG_SIZX;
 
 #define KERNEL_X 3
@@ -31,21 +31,22 @@ constexpr size_t result_y_size = (IMG_SIZY - KERNEL_Y + 1);
 constexpr size_t RESULT_SIZE = result_x_size * result_y_size;
 
 template <size_t N>
-void convolution(short*, const array<short, KERNEL_SIZE>&, array<short, N>&);
-short kernel_calc(short*, short, short, const array<short, KERNEL_SIZE>&);
+void convolution(const short*, const array<short, KERNEL_SIZE>&, array<short, N>&);
+short kernel_calc(const short*, short, short, const array<short, KERNEL_SIZE>&);
 
 template <size_t N>
 void applyFilter(short*, const array<short, KERNEL_SIZE>&, array<short, N>&, array<short, N>&, array<short, N>&);
+
 template <size_t N>
 void writeRGBtoImg(CImg<short>&, array<short, N>&, array<short, N>&, array<short, N>&);
 
 template <size_t N>
 void printMatrix(const array<short, N>&, short, short);
 
-int main() {
-    CImg<short> image("heart.jpg");
+int main(int argc, char* argv[]) {
+    CImg<short> image("eva.jpg");
 
-    short *ptr = image.data();
+    short* ptr = image.data();
     for (short i=0; i < IMG_SIZY*3; i++) {
         switch (i) {
             case 0: cout << "\t\033[1;31mRED MATRIX\033[0m\n"; break;
@@ -53,9 +54,9 @@ int main() {
             case IMG_SIZY*2: cout << "\t\033[1;34mBLUE MATRIX\033[0m\n"; break;
         }
         for (short v=0; v < IMG_SIZX; v++) {
-            if (ptr[i*IMG_SIZX + v] <10)
+            if (ptr[i*IMG_SIZX + v] < 10)
                 cout << "  " << ptr[i*IMG_SIZX + v] << ' ';
-            else if (ptr[i*IMG_SIZX + v] <100)
+            else if (ptr[i*IMG_SIZX + v] < 100)
                 cout << " " << ptr[i*IMG_SIZX + v] << ' ';
             else
                 cout << ptr[i*IMG_SIZX + v] << ' ';
@@ -80,7 +81,7 @@ int main() {
 }
 
 template <size_t N>
-void convolution(short *ptr, const array<short, KERNEL_SIZE>& kernel, array<short, N>& result) {
+void convolution(const short* ptr, const array<short, KERNEL_SIZE>& kernel, array<short, N>& result) {
     ushort x_moves = IMG_SIZX - KERNEL_X + 1;
     ushort y_moves = IMG_SIZY - KERNEL_Y + 1;
     for (ushort i=0; i < y_moves; i++) {
@@ -90,7 +91,7 @@ void convolution(short *ptr, const array<short, KERNEL_SIZE>& kernel, array<shor
     }
 }
 
-short kernel_calc(short *ptr, short x_offset, short y_offset, const array<short, KERNEL_SIZE>& kernel) {
+short kernel_calc(const short* ptr, short x_offset, short y_offset, const array<short, KERNEL_SIZE>& kernel) {
     ushort total_sum = 0;
     ushort row_sum;
     for (ushort i=0; i < KERNEL_X; i++) {
@@ -108,11 +109,11 @@ void printMatrix(const array<short, N>& matrix, short x_dimension, short y_dimen
     for (ushort i=0; i < y_dimension; i++) {
         for (ushort v=0; v < x_dimension; v++) {
             if (matrix[i*x_dimension + v] <10)
-                cout << "  " << matrix[i*x_dimension + v] << ',';
+                cout << "  " << matrix[i*x_dimension + v] << ' ';
             else if (matrix[i*x_dimension + v] <100)
-                cout << " " << matrix[i*x_dimension + v] << ',';
+                cout << " " << matrix[i*x_dimension + v] << ' ';
             else
-                cout << matrix[i*x_dimension + v] << ',';
+                cout << matrix[i*x_dimension + v] << ' ';
         }
         cout << '\n';
     }
@@ -135,21 +136,21 @@ void applyFilter(short* ptr, const array<short, KERNEL_SIZE>& kernel, array<shor
 
 template <size_t N>
 void writeRGBtoImg(CImg<short>& new_image, array<short, N>& red, array<short, N>& gre, array<short, N>& blu) {
-    for (register short i=0; i < result_y_size; i++) {
-        short inicio = i * result_x_size;
-        for (register short v=0; v < result_x_size; v++) {
+    for (unsigned short i=0; i < result_y_size; i++) {
+        unsigned int inicio = i * result_x_size;
+        for (unsigned short v=0; v < result_x_size; v++) {
             new_image[i*result_x_size + v] = red[inicio + v];
         }
     }
-    for (register short i=result_y_size; i < result_y_size*2; i++) {
-        short inicio = (i-result_y_size) * result_x_size;
-        for (register short v=0; v < result_x_size; v++) {
+    for (unsigned short i=result_y_size; i < result_y_size*2; i++) {
+        unsigned int inicio = (i-result_y_size) * result_x_size;
+        for (short v=0; v < result_x_size; v++) {
             new_image[i*result_x_size + v] = gre[inicio + v];
         }
     }
-    for (register short i=result_y_size*2; i < result_y_size*3; i++) {
-        short inicio = (i-result_y_size*2) * result_x_size;
-        for (register short v=0; v < result_x_size; v++) {
+    for (unsigned short i=result_y_size*2; i < result_y_size*3; i++) {
+        unsigned int inicio = (i-result_y_size*2) * result_x_size;
+        for (unsigned short v=0; v < result_x_size; v++) {
             new_image[i*result_x_size + v] = blu[inicio + v];
         }
     }
