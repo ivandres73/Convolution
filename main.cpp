@@ -14,16 +14,24 @@ using std::array;
 // you can add '-Dcimg_use_png' flag to handle .png (RGBA) images
 
 // IMPORTANT TO CHANGE THESE
-#define IMG_SIZX 500
-#define IMG_SIZY 700
+#define IMG_SIZX 1080
+#define IMG_SIZY 720
 constexpr size_t IMAGE_CHANNEL_SIZE = IMG_SIZY * IMG_SIZX;
 
 #define KERNEL_X 3
 #define KERNEL_Y 3
-#define KERNEL_TOTAL 16
-array<short, 9> kernel= {1, 2, 1,
-                         2, 4, 2,
-                         1, 2, 1 };
+const array<short, 9> kernel= {1, 2, 1,
+                               2, 4, 2,
+                               1, 2, 1 };
+
+constexpr unsigned short GET_KERNEL_TOTAL() {
+    unsigned short total = 0;
+    for (auto i=0; i < kernel.size(); i++)
+        total += kernel[i];
+    return total;
+}
+
+const unsigned short KERNEL_TOTAL = GET_KERNEL_TOTAL();
 
 constexpr size_t KERNEL_SIZE = KERNEL_X*KERNEL_Y;
 constexpr size_t result_x_size = (IMG_SIZX - KERNEL_X + 1);
@@ -44,7 +52,12 @@ template <size_t N>
 void printMatrix(const array<short, N>&, short, short);
 
 int main(int argc, char* argv[]) {
-    CImg<short> image("eva.jpg");
+    if (argc != 2) {
+        std::cerr << "usage is: " << argv[0] << " <file.jpg>\n";
+        return 1;
+    }
+
+    CImg<short> image(argv[1]);
 
     short* ptr = image.data();
     for (short i=0; i < IMG_SIZY*3; i++) {
