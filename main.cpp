@@ -10,6 +10,9 @@ using std::cout;
 #include <array>
 using std::array;
 
+#include "timer.h"
+#include <omp.h>
+
 // to compile: ~$ g++ main.cpp -L/usr/X11R6/lib -lm -lpthread -lX11 -ljpeg
 // you can add '-Dcimg_use_png' flag to handle .png (RGBA) images
 
@@ -51,16 +54,19 @@ void writeRGBtoImg(CImg<short>&, array<short, N>&, array<short, N>&, array<short
 template <size_t N>
 void printMatrix(const array<short, N>&, short, short);
 
+double total_time = 0;
+
 int main(int argc, char* argv[]) {
-    if (argc != 2) {
-        std::cerr << "usage is: " << argv[0] << " <file.jpg>\n";
+    if (argc != 3) {
+        std::cerr << "usage is: " << argv[0] << " <file.jpg> <#-threads>\n";
         return 1;
     }
 
     CImg<short> image(argv[1]);
+    unsigned short thread_count = std::stoi(argv[2]);
 
     short* ptr = image.data();
-    for (short i=0; i < IMG_SIZY*3; i++) {
+    /*for (short i=0; i < IMG_SIZY*3; i++) {
         switch (i) {
             case 0: cout << "\t\033[1;31mRED MATRIX\033[0m\n"; break;
             case IMG_SIZY: cout << "\t\033[1;32mGREEN MATRIX\033[0m\n"; break;
@@ -75,12 +81,13 @@ int main(int argc, char* argv[]) {
                 cout << ptr[i*IMG_SIZX + v] << ' ';
         }
         cout << '\n';
-    }
+    }*/
 
     array<short, RESULT_SIZE> red;
     array<short, RESULT_SIZE> gre;
     array<short, RESULT_SIZE> blu;
     applyFilter(ptr, kernel, red, gre, blu);
+    cout << "time: " << total_time << '\n';
 
     CImg<short> new_image(result_x_size, result_y_size, 1, 3);
     
@@ -88,7 +95,8 @@ int main(int argc, char* argv[]) {
 
     image.display();
     new_image.display();
-    new_image.save("hola.jpg");
+    std::string save_path = "output/" + std::string(argv[1]);
+    new_image.save(save_path.c_str());
 
     return 0;
 }
@@ -97,11 +105,17 @@ template <size_t N>
 void convolution(const short* ptr, const array<short, KERNEL_SIZE>& kernel, array<short, N>& result) {
     ushort x_moves = IMG_SIZX - KERNEL_X + 1;
     ushort y_moves = IMG_SIZY - KERNEL_Y + 1;
+
+    double start, finish;
+    GET_TIME(start);
+    #pragma omp parallel for num_threads(thread_count) schedule(static, 2)
     for (ushort i=0; i < y_moves; i++) {
         for (ushort v=0; v < x_moves; v++) {
             result[i*x_moves + v] = kernel_calc(ptr, i, v, kernel);
         }
     }
+    GET_TIME(finish);
+    total_time += finish-start;
 }
 
 short kernel_calc(const short* ptr, short x_offset, short y_offset, const array<short, KERNEL_SIZE>& kernel) {
@@ -134,17 +148,11 @@ void printMatrix(const array<short, N>& matrix, short x_dimension, short y_dimen
 
 template <size_t N>
 void applyFilter(short* ptr, const array<short, KERNEL_SIZE>& kernel, array<short, N>& red, array<short, N>& green, array<short, N>& blue) {
-    cout << "\tnew red matrix:\n";
     convolution(ptr, kernel, red);
-    printMatrix(red, result_x_size, result_y_size);
     ptr += IMAGE_CHANNEL_SIZE;
-    cout << "\tnew green matrix:\n";
     convolution(ptr, kernel, green);
-    printMatrix(green, result_x_size, result_y_size);
     ptr += IMAGE_CHANNEL_SIZE;
-    cout << "\tnew blue matrix:\n";
     convolution(ptr, kernel, blue);
-    printMatrix(blue, result_x_size, result_y_size);
 }
 
 template <size_t N>
