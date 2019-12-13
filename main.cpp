@@ -16,7 +16,7 @@ using std::array;
 // to compile: ~$ g++ main.cpp -L/usr/X11R6/lib -lm -lpthread -lX11 -ljpeg
 // you can add '-Dcimg_use_png' flag to handle .png (RGBA) images
 
-// IMPORTANT TO CHANGE THESE
+// IMPORTANT TO CHANGE THESE ACCORDING TO IMAGE SIZE
 #define IMG_SIZX 1080
 #define IMG_SIZY 720
 constexpr size_t IMAGE_CHANNEL_SIZE = IMG_SIZY * IMG_SIZX;

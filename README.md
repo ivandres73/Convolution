@@ -16,7 +16,7 @@ Existen varios tipos, pero todos consisten en suavizar los bordes de los objetos
 <img src="./imagesForMarkDown/bw.png" alt="drawing" width="200"/>
 <img src="./imagesForMarkDown/bw-blur.png" alt="drawing" width="200"/>
 
-> Para mas informacion [ver referencia](http://web.pdx.edu/~jduh/courses/Archive/geog481w07/Students/Ludwig_ImageConvolution.pdf)
+> Para mas informacion [ver referencia](https://www.youtube.com/watch?v=ySbmdeqR0-4)
 
 ---
 
@@ -26,7 +26,7 @@ Es una libreria que ofrece utilizades para el procesamiento de imagenes, la libr
 
 ## Lectura de una imagen
 
-Las imagenes, son interpretadas como matrices, donde cada posicion de la matriz tiene un valor del 0-255. Y existe una matriz para los canales RGB (jpg/jpeg). Para una imagen en formato PNG utiliza 4 canales (RGBA).
+Las imagenes, son interpretadas como matrices, donde cada posicion de la matriz tiene un valor del 0-255. Y existe una matriz para cada uno los canales RGB (jpg/jpeg). Para una imagen en formato PNG utiliza 4 canales (RGBA).
 
 #### Cimg crea un arreglo donde las primeras posiciones son los datos del color R, luego todos los G y por ultimo los B. i.e. char* imagen = {R, R, R, G, G, G, B, B, B}
 
@@ -46,19 +46,19 @@ CImg nos dara los siguientes datos:
 
 Rojos
 
-<img src="./imagesForMarkDown/heart1.png" alt="drawing" width="700"/>
+<img src="./imagesForMarkDown/heart1.png" alt="drawing" width="800"/>
 
 ---
 
 Verdes
 
-<img src="./imagesForMarkDown/heart2.png" alt="drawing" width="700"/>
+<img src="./imagesForMarkDown/heart2.png" alt="drawing" width="800"/>
 
 ---
 
 Azules
 
-<img src="./imagesForMarkDown/heart3.png" alt="drawing" width="700"/>
+<img src="./imagesForMarkDown/heart3.png" alt="drawing" width="800"/>
 
 > Notese que los negros son valores bajos (o nulos) y los blancos son los 3 canales de colores en sus valores mas altos
 
@@ -74,7 +74,7 @@ Azules
 
 ### Se crearon 2 funciones principales
 
-La siguiente funcion utilizara 2 _for loops_ para mover el kernel en toda la superficie de la imagen y luego escribira en la matriz **result** la tiene los datos de la imagen con el filtro ya aplicado
+La siguiente funcion utiliza 2 _for loops_ para mover el kernel en toda la superficie de la imagen y luego escribe en la matriz **result**, la cual tiene los datos de la imagen con el filtro ya aplicado
 ```cpp
 template <size_t N>
 void convolution(const short* ptr, const array<short, KERNEL_SIZE>& kernel, array<short, N>& result) {
@@ -96,7 +96,7 @@ void convolution(const short* ptr, const array<short, KERNEL_SIZE>& kernel, arra
 
 ---
 
-La siguiente funcion hara los calculos de los datos del kernel con la _cierta parte de la imagen_ y devolveviendo el resultado de los calculos
+La siguiente funcion hara los calculos de los datos del kernel con _cierta parte de la imagen_ y devolveviendo el resultado de los calculos
 
 ```cpp
 short kernel_calc(const short* ptr, short x_offset, short y_offset, const array<short, KERNEL_SIZE>& kernel) {
@@ -123,6 +123,26 @@ El kernel es una pequena matriz (usualmente de 3x3 o 5x5) que recorrera toda la 
 
 ---
 
+## Ejemplos de kernels
+
+### Deteccion de bordes:
+
+```cpp
+const array<short, 9> kernel = { 0, -1,  0,
+                                -1,  5, -1,
+                                 0, -1,  0 };
+```
+
+### Desenfoque:
+
+```cpp
+const array<short, 9> kernel = {1, 2, 1,
+                                2, 4, 2,
+                                1, 2, 1 };
+```
+
+---
+
 ## Paralelizacion
 
 Uno de los objetivos principales era resolver el problema y aplicar paralelizacion a este para probar que podia ser mas rapido (o mas lento) que una implementacion en secuencial. La implementacion fue con [OpenMP](https://www.openmp.org/wp-content/uploads/OpenMP4.0.0.pdf) y se probaron diversas configuraciones con los threads.
@@ -132,3 +152,15 @@ Uno de los objetivos principales era resolver el problema y aplicar paralelizaci
 |        |(static, 2) con 4 threads| Secuencial | (dynamic, 1) con 4 threads | (static, 1) con 2 threads |
 |:------:|:-----------------------:|:----------:|:--------------------------:|:-------------------------:|
 | Tiempo |       0.13470515        | 0.22241637 |        0.16348029          |        0.21238093         |
+
+---
+
+## Compilacion y Ejecucion (linux)
+
+Si deseas ejecutar la aplicacion en tu computadora debes:
+
+- Descargar el repositorio
+- Compilar con _./compile.sh_
+- Crear una carpeta _output_ (porque el programa guarda las imagenes filtradas en ese folder, y si no existe dara error)
+- Correr _./run_tests_ (tambien crea un archivo _times.txt_ que guarda cuanto tiempo tardo el algoritmo, **no mide todo el programa, solo el algoritmo**)
+- **Ya puedes ver las imagenes filtradas en la carpeta _output_!**
