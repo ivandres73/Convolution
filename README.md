@@ -22,7 +22,7 @@ Existen varios tipos, pero todos consisten en suavizar los bordes de los objetos
 
 ## Libreria [CImg](http://cimg.eu/)
 
-Es una libreria que ofrece utilizades para el procesamiento de imagenes, la libreria es capaz de leer/escribir imagenes y aplicar filtros en ella. La libreria perse es capaz utiliza paralelizmo com lpthreads, pero para mi implementacion solo la utilice para leer los datos de una imagen.
+Es una libreria que ofrece utilizades para el procesamiento de imagenes, la libreria es capaz de leer/escribir imagenes y aplicar filtros en ella. La libreria perse ya utiliza paralelismo com lpthreads, pero para mi implementacion solo la utilice para leer los datos de una imagen.
 
 ## Lectura de una imagen
 
