@@ -16,7 +16,7 @@ Existen varios tipos, pero todos consisten en suavizar los bordes de los objetos
 <img src="https://raw.githubusercontent.com/ivandres73/Convolution/master/imagesForMarkDown/bw.png" alt="drawing" width="200"/>
 <img src="https://raw.githubusercontent.com/ivandres73/Convolution/master/imagesForMarkDown/bw-blur.png" alt="drawing" width="200"/>
 
-> Para mas informacion [ver referencia](https://www.youtube.com/watch?v=ySbmdeqR0-4)
+> Para mas información [ver referencia](https://www.youtube.com/watch?v=ySbmdeqR0-4)
 
 ---
 
@@ -26,11 +26,11 @@ Es una librería que ofrece utilidades para el procesamiento de imágenes, la li
 
 ## Lectura de una imagen
 
-Las imgenes, son interpretadas como matrices, donde cada posicion de la matriz tiene un valor del 0-255. Y existe una matriz para cada uno los canales RGB (jpg/jpeg). Para una imagen en formato PNG utiliza 4 canales (RGBA).
+Las imágenes, son interpretadas como matrices, donde cada posición de la matriz tiene un valor del 0-255. Y existe una matriz para cada uno los canales RGB (jpg/jpeg). Para una imagen en formato PNG se utiliza 4 canales (RGBA).
 
 #### Cimg crea un arreglo donde las primeras posiciones son los datos del color R, luego todos los G y por ultimo los B. i.e. char* imagen = {R, R, R, G, G, G, B, B, B}
 
-> Explicacion de como CImg maneja los pixeles [aqui](http://cimg.eu/reference/group__cimg__storage.html)
+> Explicación de como CImg maneja los pixeles [aquí](http://cimg.eu/reference/group__cimg__storage.html)
 
 ---
 
@@ -70,11 +70,11 @@ Azules
 
 ---
 
-## Implementacion
+## Implementación
 
 ### Se crearon 2 funciones principales
 
-La siguiente funcion utiliza 2 _for loops_ para mover el kernel en toda la superficie de la imagen y luego escribe en la matriz **result**, la cual tiene los datos de la imagen con el filtro ya aplicado
+La siguiente función utiliza 2 _for loops_ para mover el kernel en toda la superficie de la imagen y luego escribe en la matriz **result**, la cual tiene los datos de la imagen con el filtro ya aplicado
 ```cpp
 template <size_t N>
 void convolution(const short* ptr, const array<short, KERNEL_SIZE>& kernel, array<short, N>& result) {
@@ -96,7 +96,7 @@ void convolution(const short* ptr, const array<short, KERNEL_SIZE>& kernel, arra
 
 ---
 
-La siguiente funcion hara los calculos de los datos del kernel con _cierta parte de la imagen_ y devolveviendo el resultado de los calculos
+La siguiente función hara los calculos de los datos del kernel con _cierta parte de la imagen_ y devolviendo el resultado de los cálculos
 
 ```cpp
 short kernel_calc(const short* ptr, short x_offset, short y_offset, const array<short, KERNEL_SIZE>& kernel) {
@@ -117,7 +117,7 @@ short kernel_calc(const short* ptr, short x_offset, short y_offset, const array<
 
 ## PERO QUE ES ESO DEL KERNEL !?
 
-El kernel es una pequena matriz (usualmente de 3x3 o 5x5) que recorre toda la imagen para aplicar los calculos sobre un pixel pero tomando en cuenta los pixeles adyacentes.
+El kernel es una pequena matriz (usualmente de 3x3 o 5x5) que recorre toda la imagen para aplicar los cálculos sobre un pixel pero tomando en cuenta los pixeles adyacentes.
 
 ![kernelGif](./imagesForMarkDown/convolution.gif)
 
@@ -125,7 +125,7 @@ El kernel es una pequena matriz (usualmente de 3x3 o 5x5) que recorre toda la im
 
 ## Ejemplos de kernels
 
-### Deteccion de bordes:
+### Detección de bordes:
 
 ```cpp
 const array<short, 9> kernel = { 0, -1,  0,
@@ -143,9 +143,9 @@ const array<short, 9> kernel = {1, 2, 1,
 
 ---
 
-## Paralelizacion
+## Paralelización
 
-Uno de los objetivos principales era resolver el problema y aplicar paralelizacion a este para probar que podia ser mas rapido (o mas lento) que una implementacion en secuencial. La implementacion fue con [OpenMP](https://www.openmp.org/wp-content/uploads/OpenMP4.0.0.pdf) y se probaron diversas configuraciones con los threads.
+Uno de los objetivos principales ademas de resolver el problema era aplicar paralelización a este y probar que podía ser mas rápido (o mas lento) que una implementación en secuencial. La implementación fue con [OpenMP](https://www.openmp.org/wp-content/uploads/OpenMP4.0.0.pdf) y se probaron diversas configuraciones con los threads.
 
  #### Los resultados promedio fueron los siguientes (100 imagenes 1080x720):
 
@@ -155,9 +155,9 @@ Uno de los objetivos principales era resolver el problema y aplicar paralelizaci
 
 ---
 
-## Compilacion y Ejecucion (linux)
+## Compilación y Ejecución (linux)
 
-Si deseas ejecutar la aplicacion en tu computadora debes:
+Si deseas ejecutar la aplicación en tu computadora debes:
 
 - Descargar el repositorio
 - Compilar con _./compile.sh_
