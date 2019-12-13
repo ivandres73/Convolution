@@ -1,32 +1,32 @@
 
-# FILTRO DE IMAGENES
+# FILTRO DE IMÁGENES
 
-El siguiente proyecto prueba el algoritmo para aplicar filtros a imagenes por medio de la convolucion
+El siguiente proyecto prueba el algoritmo para aplicar filtros a imágenes por medio de la convolución
 
 ---
 
-## Que es un filtro
+## Qué es un filtro?
 
-Es la alteracion digital de una fotografia.
+Es la alteración digital de una fotografía
 
 ## Filtro de desenfoque
 
 Existen varios tipos, pero todos consisten en suavizar los bordes de los objetos dentro de una imagen
 
-<img src="./imagesForMarkDown/bw.png" alt="drawing" width="200"/>
-<img src="./imagesForMarkDown/bw-blur.png" alt="drawing" width="200"/>
+<img src="https://raw.githubusercontent.com/ivandres73/Convolution/master/imagesForMarkDown/bw.png" alt="drawing" width="200"/>
+<img src="https://raw.githubusercontent.com/ivandres73/Convolution/master/imagesForMarkDown/bw-blur.png" alt="drawing" width="200"/>
 
 > Para mas informacion [ver referencia](https://www.youtube.com/watch?v=ySbmdeqR0-4)
 
 ---
 
-## Libreria [CImg](http://cimg.eu/)
+## Librería [CImg](http://cimg.eu/)
 
-Es una libreria que ofrece utilizades para el procesamiento de imagenes, la libreria es capaz de leer/escribir imagenes y aplicar filtros en ella. La libreria perse ya utiliza paralelismo com lpthreads, pero para mi implementacion solo la utilice para leer los datos de una imagen.
+Es una librería que ofrece utilidades para el procesamiento de imágenes, la librería es capaz de leer/escribir imágenes y aplicar filtros en ella. La librería perse ya utiliza paralelismo com lpthreads, pero para mi implementación solo la utilicé para leer los datos de una imagen
 
 ## Lectura de una imagen
 
-Las imagenes, son interpretadas como matrices, donde cada posicion de la matriz tiene un valor del 0-255. Y existe una matriz para cada uno los canales RGB (jpg/jpeg). Para una imagen en formato PNG utiliza 4 canales (RGBA).
+Las imgenes, son interpretadas como matrices, donde cada posicion de la matriz tiene un valor del 0-255. Y existe una matriz para cada uno los canales RGB (jpg/jpeg). Para una imagen en formato PNG utiliza 4 canales (RGBA).
 
 #### Cimg crea un arreglo donde las primeras posiciones son los datos del color R, luego todos los G y por ultimo los B. i.e. char* imagen = {R, R, R, G, G, G, B, B, B}
 
