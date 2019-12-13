@@ -23,9 +23,9 @@ constexpr size_t IMAGE_CHANNEL_SIZE = IMG_SIZY * IMG_SIZX;
 
 #define KERNEL_X 3
 #define KERNEL_Y 3
-const array<short, 9> kernel= {1, 2, 1,
-                               2, 4, 2,
-                               1, 2, 1 };
+const array<short, 9> kernel= {0, -1, 0,
+                               -1, 5, -1,
+                               0, -1, 0 };
 
 constexpr unsigned short GET_KERNEL_TOTAL() {
     unsigned short total = 0;
