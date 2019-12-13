@@ -117,7 +117,7 @@ short kernel_calc(const short* ptr, short x_offset, short y_offset, const array<
 
 ## PERO QUE ES ESO DEL KERNEL !?
 
-El kernel es una pequena matriz (usualmente de 3x3 o 5x5) que recorrera toda la imagen para aplicar los calculos sobre un pixel pero tomando en cuenta los pixeles adyacentes.
+El kernel es una pequena matriz (usualmente de 3x3 o 5x5) que recorre toda la imagen para aplicar los calculos sobre un pixel pero tomando en cuenta los pixeles adyacentes.
 
 ![kernelGif](./imagesForMarkDown/convolution.gif)
 
@@ -149,9 +149,9 @@ Uno de los objetivos principales era resolver el problema y aplicar paralelizaci
 
  #### Los resultados promedio fueron los siguientes (100 imagenes 1080x720):
 
-|        |(static, 2) con 4 threads| Secuencial | (dynamic, 1) con 4 threads | (static, 1) con 2 threads |
-|:------:|:-----------------------:|:----------:|:--------------------------:|:-------------------------:|
-| Tiempo |       0.13470515        | 0.22241637 |        0.16348029          |        0.21238093         |
+|             |(static, 2) con 4 threads| Secuencial | (dynamic, 1) con 4 threads | (static, 1) con 2 threads |
+|:-----------:|:-----------------------:|:----------:|:--------------------------:|:-------------------------:|
+| Tiempo(seg) |       0.13470515        | 0.22241637 |        0.16348029          |        0.21238093         |
 
 ---
 
