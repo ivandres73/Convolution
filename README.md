@@ -13,8 +13,9 @@ Es la alteración digital de una fotografía
 
 Existen varios tipos, pero todos consisten en suavizar los bordes de los objetos dentro de una imagen
 
-<img src="https://raw.githubusercontent.com/ivandres73/Convolution/master/imagesForMarkDown/bw.png" alt="drawing" width="200"/>
-<img src="https://raw.githubusercontent.com/ivandres73/Convolution/master/imagesForMarkDown/bw-blur.png" alt="drawing" width="200"/>
+Original                                                          | Borde suavizado
+:----------------------------------------------------------------:|:--------------------------------------------------------------------------------:
+<img src="./imagesForMarkDown/bw.png" alt="drawing" width="200"/> | <img src="./imagesForMarkDown/bw-blur.png" alt="drawing" width="200"/>
 
 > Para mas información [ver referencia](https://www.youtube.com/watch?v=ySbmdeqR0-4)
 
