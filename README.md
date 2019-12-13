@@ -158,7 +158,7 @@ Uno de los objetivos principales ademas de resolver el problema era aplicar para
 
 ---
 
-## Compilación y Ejecución (linux)
+## 💻 Compilación y Ejecución (linux)
 
 Si deseas ejecutar la aplicación en tu computadora debes:
 
