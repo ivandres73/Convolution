@@ -23,11 +23,11 @@ Original                                                          | Borde suaviz
 
 ## 📘 Librería [CImg](http://cimg.eu/)
 
-Es una librería que ofrece utilidades para el procesamiento de imágenes, la librería es capaz de leer/escribir imágenes y aplicar filtros en ella. La librería perse ya utiliza paralelismo com lpthreads, pero para mi implementación solo la utilicé para leer los datos de una imagen
+Es una librería que ofrece utilidades para el procesamiento de imágenes, la librería es capaz de leer/escribir imágenes y aplicar filtros en ella. La librería perse ya utiliza paralelismo com [lpthreads](https://computing.llnl.gov/tutorials/pthreads/), pero para mi implementación solo la utilicé para leer los datos de una imagen
 
 ## Lectura de una imagen
 
-Las imágenes, son interpretadas como matrices, donde cada posición de la matriz tiene un valor del 0-255. Y existe una matriz para cada uno los canales RGB (jpg/jpeg). Para una imagen en formato PNG se utiliza 4 canales (RGBA).
+Las imágenes, son interpretadas como matrices, donde cada posición de la matriz tiene un valor del 0-255. Y existe una matriz para cada uno los canales RGB (jpg/jpeg). Para una imagen en formato PNG se utilizan 4 canales (RGBA).
 
 #### Cimg crea un arreglo donde las primeras posiciones son los datos del color R, luego todos los G y por ultimo los B. i.e. char* imagen = {R, R, R, G, G, G, B, B, B}
 
@@ -43,7 +43,7 @@ Dada la siguiente imagen:
 
 ---
 
-CImg nos dara los siguientes datos:
+CImg nos dará los siguientes datos:
 
 Rojos
 
@@ -61,7 +61,7 @@ Azules
 
 <img src="./imagesForMarkDown/heart3.png" alt="drawing" width="800"/>
 
-> Notese que los negros son valores bajos (o nulos) y los blancos son los 3 canales de colores en sus valores mas altos
+> Notese que los negros son valores bajos (cercanos a 0) y los blancos son los 3 canales de colores en sus valores mas altos
 
 ---
 
@@ -99,7 +99,7 @@ void convolution(const short* ptr, const array<short, KERNEL_SIZE>& kernel, arra
 
 ---
 
-La siguiente función hara los calculos de los datos del kernel con _cierta parte de la imagen_ y devolviendo el resultado de los cálculos
+La siguiente función hara los cálculos de los datos del kernel con _cierta parte de la imagen_ y devolviendo el resultado de los cálculos
 
 ```cpp
 short kernel_calc(const short* ptr, short x_offset, short y_offset, const array<short, KERNEL_SIZE>& kernel) {
@@ -120,7 +120,7 @@ short kernel_calc(const short* ptr, short x_offset, short y_offset, const array<
 
 ## PERO QUE ES ESO DEL KERNEL !?
 
-El kernel es una pequena matriz (usualmente de 3x3 o 5x5) que recorre toda la imagen para aplicar los cálculos sobre un pixel pero tomando en cuenta los pixeles adyacentes.
+El kernel es una pequeña matriz (usualmente 3x3 o 5x5) que recorre toda la imagen para aplicar los cálculos sobre un pixel pero tomando en cuenta los pixeles adyacentes.
 
 ![kernelGif](./imagesForMarkDown/convolution.gif)
 
@@ -152,9 +152,9 @@ Uno de los objetivos principales ademas de resolver el problema era aplicar para
 
  #### Los resultados promedio fueron los siguientes (100 imagenes 1080x720):
 
-|             |(static, 2) con 4 threads| Secuencial | (dynamic, 1) con 4 threads | (static, 1) con 2 threads |
-|:-----------:|:-----------------------:|:----------:|:--------------------------:|:-------------------------:|
-| Tiempo(seg) |       0.13470515        | 0.22241637 |        0.16348029          |        0.21238093         |
+|              |(static, 2) con 4 threads| Secuencial | (dynamic, 1) con 4 threads | (static, 1) con 2 threads |
+|:------------:|:-----------------------:|:----------:|:--------------------------:|:-------------------------:|
+| Tiempo (seg) |       0.13470515        | 0.22241637 |        0.16348029          |        0.21238093         |
 
 ---
 
@@ -164,6 +164,6 @@ Si deseas ejecutar la aplicación en tu computadora debes:
 
 - Descargar el repositorio
 - Compilar con _./compile.sh_
-- Crear una carpeta _output_ (porque el programa guarda las imagenes filtradas en ese folder, y si no existe dara error)
-- Correr _./run_tests_ (tambien crea un archivo _times.txt_ que guarda cuanto tiempo tardo el algoritmo, **no mide todo el programa, solo el algoritmo**)
-- **Ya puedes ver las imagenes filtradas en la carpeta _output_!**
+- Crear una carpeta _output_ (porque el programa guarda las imagenes filtradas en ese folder, y si no existe dará error)
+- Correr _./run_tests.sh_ (tambien crea un archivo _times.txt_ que guarda cuanto tiempo tardo el algoritmo, **no mide todo el programa, solo el algoritmo**)
+- **Ya puedes ver las imagenes filtradas en la carpeta _output/_!**
