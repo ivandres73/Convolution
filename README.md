@@ -1,5 +1,5 @@
 
-# 🌆FILTRO DE IMÁGENES 
+# 🌆 FILTRO DE IMÁGENES 
 
 El siguiente proyecto prueba el algoritmo para aplicar filtros a imágenes por medio de la convolución
 
@@ -21,7 +21,7 @@ Original                                                          | Borde suaviz
 
 ---
 
-## Librería [CImg](http://cimg.eu/)
+## 📘 Librería [CImg](http://cimg.eu/)
 
 Es una librería que ofrece utilidades para el procesamiento de imágenes, la librería es capaz de leer/escribir imágenes y aplicar filtros en ella. La librería perse ya utiliza paralelismo com lpthreads, pero para mi implementación solo la utilicé para leer los datos de una imagen
 
@@ -146,7 +146,7 @@ const array<short, 9> kernel = {1, 2, 1,
 
 ---
 
-## 📊Paralelización
+## 📊 Paralelización
 
 Uno de los objetivos principales ademas de resolver el problema era aplicar paralelización a este y probar que podía ser mas rápido (o mas lento) que una implementación en secuencial. La implementación fue con [OpenMP](https://www.openmp.org/wp-content/uploads/OpenMP4.0.0.pdf) y se probaron diversas configuraciones con los threads.
 
