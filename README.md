@@ -65,8 +65,10 @@ Azules
 ---
 
 ## Resultado del filtro
-<img src="./imagesForMarkDown/heart.jpg" alt="drawing" width="200"/>
-<img src="./imagesForMarkDown/heart-blur.jpg" alt="drawing" width="200"/>
+
+Original                                                             |  After filter
+:-------------------------------------------------------------------:|:-----------------------------------------------------------------------------:
+<img src="./imagesForMarkDown/heart.jpg" alt="drawing" width="200"/> | <img src="./imagesForMarkDown/heart-blur.jpg" alt="drawing" width="200"/>
 
 ---
 
