@@ -54,7 +54,9 @@ void writeRGBtoImg(CImg<short>&, array<short, N>&, array<short, N>&, array<short
 template <size_t N>
 void printMatrix(const array<short, N>&, short, short);
 
+// UTILITY GLOBAL VARIABLES
 double total_time = 0;
+unsigned short thread_count;
 
 int main(int argc, char* argv[]) {
     if (argc != 3) {
@@ -63,7 +65,7 @@ int main(int argc, char* argv[]) {
     }
 
     CImg<short> image(argv[1]);
-    unsigned short thread_count = std::stoi(argv[2]);
+    thread_count = std::stoi(argv[2]);
 
     short* ptr = image.data();
     /*for (short i=0; i < IMG_SIZY*3; i++) {
@@ -87,14 +89,15 @@ int main(int argc, char* argv[]) {
     array<short, RESULT_SIZE> gre;
     array<short, RESULT_SIZE> blu;
     applyFilter(ptr, kernel, red, gre, blu);
-    cout << "time: " << total_time << '\n';
+    cout << total_time << '\n';
 
     CImg<short> new_image(result_x_size, result_y_size, 1, 3);
     
     writeRGBtoImg(new_image, red, gre, blu);
 
-    image.display();
-    new_image.display();
+    //image.display();
+    //new_image.display();
+    argv[1] += 5;// drop the "img/" from the path
     std::string save_path = "output/" + std::string(argv[1]);
     new_image.save(save_path.c_str());
 
